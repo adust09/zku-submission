@@ -45,6 +45,8 @@ contract Ballot {
         }
     }
 
+    uint256 public deadline = block.timestamp + 300 seconds;
+
     // Give `voter` the right to vote on this ballot.
     // May only be called by `chairperson`.
     //投票する権利を渡す
@@ -109,18 +111,13 @@ contract Ballot {
     }
 
     modifier voteEnded() {
-        uint256 now = block.timestamp;
-        bool voteValidity = timeVerifyer(now);
-        require(!voteValidity, "Vote is ended.");
-        _;
-    }
-
-    function timeVerifyer(uint256 time) public view returns (bool timeOver) {
+        uint256 votingTime = block.timestamp;
         bool timeOver = false;
-        if (block.timestamp > time + 300) {
+        if (votingTime > deadline) {
             timeOver = true;
         }
-        return timeOver;
+        require(!timeOver, "Vote is ended.");
+        _;
     }
 
     /// Give your vote (including votes delegated to you)
