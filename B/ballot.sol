@@ -23,7 +23,7 @@ contract Ballot {
     address public chairperson;
 
     // This declares a state variable that
-    // stores a `Voter` struct for each possible address.
+    // stores a `Voter` struct for each possible address.s
     mapping(address => Voter) public voters;
 
     // A dynamically-sized array of `Proposal` structs.
@@ -44,6 +44,8 @@ contract Ballot {
             proposals.push(Proposal({name: proposalNames[i], voteCount: 0}));
         }
     }
+
+    uint256 public deadline = block.timestamp + 300 seconds;
 
     // Give `voter` the right to vote on this ballot.
     // May only be called by `chairperson`.
@@ -109,18 +111,13 @@ contract Ballot {
     }
 
     modifier voteEnded() {
-        uint256 now = block.timestamp;
-        bool voteValidity = timeVerifyer(now);
-        require(!voteValidity, "Vote is ended.");
-        _;
-    }
-
-    function timeVerifyer(uint256 time) public view returns (bool timeOver) {
+        uint256 votingTime = block.timestamp;
         bool timeOver = false;
-        if (block.timestamp > time + 300) {
+        if (votingTime > deadline) {
             timeOver = true;
         }
-        return timeOver;
+        require(!timeOver, "Vote is ended.");
+        _;
     }
 
     /// Give your vote (including votes delegated to you)
