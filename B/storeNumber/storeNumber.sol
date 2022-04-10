@@ -2,13 +2,13 @@
 pragma solidity ^0.8.7;
 
 contract Mapping {
-    mapping(address => uint256) public Store;
+    mapping(address => string) public Store;
 
-    function storeNumber(address _addr, uint256 _i) public {
-        Store[_addr] = _i;
+    function storeNumber(address _addr, string memory _message) public {
+        Store[_addr] = _message;
     }
 
-    function retrieveNumber(address _addr) public view returns (uint256) {
+    function retrieveNumber(address _addr) public view returns (string memory) {
         return Store[_addr];
     }
 }
